@@ -1,0 +1,14 @@
+{
+  "name": "fstack",
+  "description": "Local marketplace for the fstack plugin: f-chief, a chief of staff for Claude Code with a project wiki as memory.",
+  "owner": {
+    "name": "fplanchette"
+  },
+  "plugins": [
+    {
+      "name": "fstack",
+      "source": "./",
+      "description": "f-chief routes requests, grills, delegates to parallel subagents, and keeps a markdown wiki as the project's memory."
+    }
+  ]
+}
