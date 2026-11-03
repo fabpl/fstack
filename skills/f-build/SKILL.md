@@ -5,7 +5,7 @@ argument-hint: <run id>
 effort: medium
 ---
 
-Build every ticket under `.fstack/runs/$0/tickets/` and land the result on one integration branch. Roles, models and communication rules: `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/agent-roles.md`. Report format: `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/run-layout.md`.
+Build every ticket under `.fstack/runs/$0/tickets/` and land the result on one integration branch. The architecture path is `.fstack/runs/$0/architecture.md` when that file exists with `status: approved`, `none` otherwise. A `draft` architecture on a `route: full` run means the architecture step did not finish: say so in one line and stop. Roles, models and communication rules: `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/agent-roles.md`. Report format: `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/run-layout.md`.
 
 You dispatch and read reports. You do not read code and you do not implement.
 
@@ -30,7 +30,7 @@ The frontier is the set of `todo` tickets whose blockers are all `landed`. Lande
 
 Repeat until no ticket is `todo` or `building`:
 
-1. For every ticket on the frontier, set `status: building` in its frontmatter and spawn one `fstack:implementer` with pointers only: ticket path, spec path, note paths the ticket names, wiki convention slugs, the paths of every report already under `reports/` (their Decisions and Observations are the map of what earlier tickets built), the project's `wiki/overview/` page when its status is `active`, integration branch, gate commands, run directory. Background and worktree in git mode.
+1. For every ticket on the frontier, set `status: building` in its frontmatter and spawn one `fstack:implementer` with pointers only: ticket path, spec path, architecture path (or `none`), note paths the ticket names, wiki convention slugs, the paths of every report already under `reports/` (their Decisions and Observations are the map of what earlier tickets built), the project's `wiki/overview/` page when its status is `active`, integration branch, gate commands, run directory. Background and worktree in git mode.
 2. When an implementer returns:
    - `failed` or `partial`: read its `## Open` before anything else. If one missing fact explains it, spawn an explorer for that fact and re-dispatch once with the note. Otherwise set `status: failed`, leave its dependents `todo` and unbuildable, and continue with the rest.
    - `done` in git mode: spawn one `fstack:merger` (foreground) with the ticket branch, the integration branch, the test gate command, the `commits` convention page path, the run directory. On merger `done`, set the ticket `landed`. On merger `failed`, set the ticket `failed` and report the conflicting files.
@@ -39,9 +39,9 @@ Repeat until no ticket is `todo` or `building`:
 
 ## 4. Review, once
 
-When every ticket is `landed` or `failed`, spawn one `fstack:reviewer` with: the integration branch and its base (or the working tree without git), the spec path, the ticket directory, the wiki convention slugs, the gate commands, the run directory.
+When every ticket is `landed` or `failed`, spawn one `fstack:reviewer` with: the integration branch and its base (or the working tree without git), the spec path, the architecture path (or `none`), the ticket directory, the wiki convention slugs, the gate commands, the run directory.
 
-Read `.fstack/runs/$0/reports/review.md`. If `## Open` has findings, spawn one `fstack:implementer` with the review report path as its ticket, the spec path, the integration branch, the gate commands. One pass. When it returns, run focused checks only on the fixed findings if needed, then close.
+Read `.fstack/runs/$0/reports/review.md`. If `## Open` has findings, spawn one `fstack:implementer` with the review report path as its ticket, the spec path, the architecture path (or `none`), the integration branch, the gate commands. One pass. When it returns, run focused checks only on the fixed findings if needed, then close.
 
 ## 5. Close
 

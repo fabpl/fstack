@@ -39,7 +39,7 @@ Sections, in this order, all present:
 3. **Decisions** — one line per decision from the interview, with the answer as given. Precise values survive here: numbers, defaults, ordering guarantees, negative requirements ("never ..."). Do not soften them.
 4. **Seams** — the approved list.
 5. **Behaviour** — what the system does after the change, as checkable statements. Each statement is testable at one of the seams.
-6. **Implementation decisions** — structure, names, modules, only where the user decided them. Mark anything left to the implementer as "implementer's choice".
+6. **Implementation decisions** — structure, names, modules, only where the user decided them. The architecture step decides the rest: leave it out rather than mark it.
 7. **Testing decisions** — what is tested where, fixtures, and the gate commands from the project's `toolchain` page (format, lint, analyse, test). A gate the page marks `missing` stays missing here: the spec does not invent tooling. On a greenfield project the page reads `missing — chosen: <tool>`: the spec names those tools and makes their installation the first behaviour to deliver.
 8. **Out of scope** — what was refused or deferred. The most useful lines on the page. On a greenfield project, state that the spec covers the first demoable increment only and list what the product will need later.
 9. **Open** — questions no one answered, to be asked before build if they block.

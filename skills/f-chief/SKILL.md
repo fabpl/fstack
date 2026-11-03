@@ -48,7 +48,7 @@ Run id for quick and full: `YYYY-MM-DD-<slug>`, today's date and a two-to-four-w
 ## 3. Route: quick
 
 1. Write `.fstack/runs/<run id>/brief.md`: frontmatter (`run`, `kind: brief`, `route: quick`, `date`), the request verbatim, and the wiki slugs that apply.
-2. Spawn one `fstack:implementer` (foreground) with pointers only: the brief path, the wiki slugs, the integration branch `none`, the run directory. Say which tests to run if the wiki records a test command.
+2. Spawn one `fstack:implementer` (foreground) with pointers only: the brief path as its ticket, spec `none`, architecture `none`, the wiki slugs, the integration branch `none`, the run directory. Say which tests to run if the wiki records a test command.
 3. Read its report. If `status` is not `done`, tell the user what is open and stop.
 4. Invoke the Skill tool with `fstack:f-wiki` and the argument `distil <run id>`.
 5. Report to the user in under ten lines, from the report's `## Done` and `## Open`.
@@ -56,6 +56,8 @@ Run id for quick and full: `YYYY-MM-DD-<slug>`, today's date and a two-to-four-w
 ## 4. Route: full
 
 After the user's yes, run the chain. Each step is a skill the user can also run alone.
+
+Each step returns one line. When f-spec or f-arch returns a status other than `approved`, or f-tickets returns without writing tickets, stop the chain there: tell the user, in under five lines, what is missing and that the step can be replayed alone. Resume at the following step only once that step reports `approved` or tickets exist. Never run a step on the output of one that did not finish.
 
 ### 4.1 Grill
 
@@ -66,6 +68,7 @@ This step stays with you.
 - Every question carries a recommendation, first, marked as such. The user can accept it with one word.
 - Ask the user only what the code and the wiki cannot answer: spawn an `fstack:explorer` for a factual question first.
 - Challenge a word the user uses when a `term` page defines it differently.
+- Grill on what the change does, for whom, and its limits. How it is built (modules, names, libraries, data layout) belongs to the architecture step: record what the user volunteers, do not ask it.
 - Stop when a fresh agent could build the thing from your shared understanding without asking anything. Say so in one line.
 - After every round, append one line per question and answer to `.fstack/runs/<run id>/interview.md` (table: `#`, `Question`, `Answer`).
 - Greenfield (the overview page is `status: draft` and says so): the code cannot answer anything, so the interview must settle, in this order, what the project does and for whom, the first demoable increment (not the whole product), the stack, the constraints, and the quality gates. For the gates, read `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/quality-catalog.md` yourself and recommend the row that matches the chosen stack. When the stack and gates resolve, write `wiki/conventions/toolchain.md` in the project with every gate as `missing — chosen: <tool>`; the first ticket of the run installs them. Scope the spec to the first increment and say so in its Out of scope section.
@@ -75,15 +78,19 @@ This step stays with you.
 
 Invoke the Skill tool with `fstack:f-spec` and the argument `<run id>`.
 
-### 4.3 Tickets
+### 4.3 Architecture
+
+Invoke the Skill tool with `fstack:f-arch` and the argument `<run id>`.
+
+### 4.4 Tickets
 
 Invoke the Skill tool with `fstack:f-tickets` and the argument `<run id>`.
 
-### 4.4 Build
+### 4.5 Build
 
 Invoke the Skill tool with `fstack:f-build` and the argument `<run id>`.
 
-### 4.5 Distil and report
+### 4.6 Distil and report
 
 Invoke the Skill tool with `fstack:f-wiki` and the argument `distil <run id>`. Then give the user the final report it produced. The report comes from the agents' reports, never from your memory of the run.
 

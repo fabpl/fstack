@@ -9,7 +9,7 @@ Split `.fstack/runs/$0/spec.md` into tickets under `.fstack/runs/$0/tickets/`. T
 
 ## 1. Gather
 
-Read the spec. Read the wiki `convention` pages it names. If the spec's Context leaves a code question open (what exists today at a seam, which files a change will fan into), spawn one `fstack:explorer` per question, in parallel, writing notes under `.fstack/runs/$0/notes/`. Explorers read the code for you.
+Read the spec's frontmatter: if it is not `status: approved`, say so in one line and stop. Read `route` in `.fstack/runs/$0/brief.md`: on `route: full`, `.fstack/runs/$0/architecture.md` must exist with `status: approved`, otherwise say so in one line and stop. Then read the spec and the architecture. Read the wiki `convention` pages the spec names. If the spec and the architecture leave a code question open (what exists today at a seam, which files a change will fan into), spawn one `fstack:explorer` per question, in parallel, writing notes under `.fstack/runs/$0/notes/`. Explorers read the code for you.
 
 ## 2. Draft slices
 
@@ -20,7 +20,8 @@ Aim for the widest frontier the rules below allow. A chain where each ticket blo
 - Prefactoring that makes the change easy comes first, as its own ticket.
 - Greenfield: ticket `01-toolchain` creates the project skeleton, runs `git init` when the folder has no repository, installs the gates chosen in `toolchain.md` with one trivial test green through all four gates, and declares every file the later tickets would otherwise fight over (content schemas, route or collection registry, shared config), each with its entries named so a later ticket fills its own. Every other ticket is blocked by it, and by nothing else unless the spec forces an order.
 - A wide mechanical refactor (rename a shared symbol, retype a column) is the exception: sequence it as expand, migrate in batches, contract. Each batch is a ticket blocked by the expand; the contract is blocked by every batch.
-- Two tickets that will touch the same shared file (a registry, a message catalogue, a type) get a blocking edge between them, or the note fixes the exact names each one adds. Worktrees postpone collisions to merge time; they do not remove them.
+- Two tickets that will touch the same shared file (a registry, a message catalogue, a type) get a blocking edge between them, or the note fixes the exact names each one adds. Worktrees postpone collisions to merge time; they do not remove them. The architecture's Shared files section lists those files and their entries: use it, do not rediscover it.
+- With an architecture, slice along its Structure, prefactoring first. Each ticket names the Structure lines it builds. A ticket needing a file or interface the architecture lacks goes back to the user, like a missing seam.
 - Each ticket names its seams, from the spec. A ticket needing a seam the spec lacks goes back to the user.
 
 ## 3. Quiz the user
@@ -48,6 +49,6 @@ status: todo
 ---
 ```
 
-Body, under thirty lines: what to build, in the project's terms; read first (spec sections, note paths, wiki slugs); acceptance criteria as checkable lines; what this ticket must not touch.
+Body, under thirty lines: what to build, in the project's terms; read first (spec sections, architecture sections, note paths, wiki slugs); acceptance criteria as checkable lines; what this ticket must not touch.
 
 Return one line: the ticket count, how many have no blockers, and the directory path.

@@ -44,10 +44,10 @@ No `toolchain.md` yet: f-chief writes it during the interview when the stack res
 
 Turn `.fstack/runs/$1/` into memory.
 
-1. Read every file under `.fstack/runs/$1/reports/`. Read `brief.md`, and `interview.md` and `spec.md` when they exist. Do not read notes unless a report points to one for a fact you must record.
+1. Read every file under `.fstack/runs/$1/reports/`. Read `brief.md`, and `interview.md`, `spec.md` and `architecture.md` when they exist. Do not read notes unless a report points to one for a fact you must record.
 2. Write `wiki/runs/$1.md`: Goal, Outcome, Decisions made, Observations, Open. Under twenty lines. Every line traces to a report or a run file.
 3. Promote report lines:
-   - `## Decisions` lines that pass all three gates (hard to reverse, surprising without context, a real trade-off) become a `decision` page, numbered after the last one. The rest stay in the run page.
+   - `## Decisions` lines that pass all three gates (hard to reverse, surprising without context, a real trade-off) become a `decision` page, numbered after the last one, unless a `decision` page with `source_run: $1` already records it (f-arch writes them during the run). The rest stay in the run page.
    - `## Observations` lines about structure update the relevant `overview` page in place. Lines about a rule become or extend a `convention` page. A recurring name with a specific meaning becomes a `term` page.
    - A report whose `## Done` installs or configures a gate tool updates the project's `toolchain.md`: the gate's `missing — chosen: <tool>` becomes the real command, `source: project`.
    - On a greenfield project, the first landed run rewrites the draft overview page from the reports and sets `status: active`.

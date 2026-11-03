@@ -13,17 +13,18 @@ A Claude Code plugin that gives a project a chief of staff.
 |---|---|
 | `/fstack:f-chief <request>` | Routes to answer, quick or full, and runs it end to end |
 | `/fstack:f-spec <run>` | Writes the spec of a run from the conversation |
-| `/fstack:f-tickets <run>` | Splits a spec into tickets with blocking edges |
+| `/fstack:f-arch <run>` | Has the architect decide how an approved spec is built, asks you the hard choices |
+| `/fstack:f-tickets <run>` | Splits a spec into tickets with blocking edges, along its architecture |
 | `/fstack:f-build <run>` | Frontier-parallel build, test-first, one review, one fix pass |
 | `/fstack:f-wiki bootstrap` or `distil <run>` | Creates the wiki, or turns a run's reports into wiki pages |
 
-Four agents do the work: `explorer` (medium effort) and `merger` (low) on Sonnet, `implementer` and `reviewer` on Opus at high effort. f-chief itself runs on Fable at high effort; f-build and f-wiki step down to medium.
+Five agents do the work: `explorer` (medium effort) and `merger` (low) on Sonnet, `architect`, `implementer` and `reviewer` on Opus at high effort. f-chief itself runs on Fable at high effort; f-build and f-wiki step down to medium.
 
 ## Routes
 
 - **answer**: a question. Wiki first, one explorer if the wiki is not enough. Nothing written.
 - **quick**: one change, one implementer, no spec. Proceeds without asking.
-- **full**: grill → spec → tickets → build → review → distil. Announced, then waits for your yes.
+- **full**: grill → spec → architecture → tickets → build → review → distil. Announced, then waits for your yes.
 
 ## What it leaves in your project
 
@@ -32,7 +33,7 @@ wiki/                 durable memory, committed, written by f-chief only
   index.md            read on every request
   overview/  decisions/  terms/  conventions/  runs/
 .fstack/runs/<date>-<slug>/   working memory of one run, committed
-  brief.md  interview.md  spec.md  tickets/  notes/  reports/
+  brief.md  interview.md  spec.md  architecture.md  tickets/  notes/  reports/
 ```
 
 Two plugin-wide quality rules ship with it: Conventional Commits on every commit, and four quality gates (format, lint, analyse, test) that implementers must pass and the reviewer re-runs. Bootstrap detects the project's stack and records the gate commands in a `toolchain` page, recommending tools from a catalog for the gaps without installing them.
