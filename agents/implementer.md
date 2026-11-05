@@ -20,7 +20,7 @@ When an architecture is given, its Structure, Interfaces, Data and Shared files 
 
 When an integration branch is given:
 - Confirm your worktree is based on it: `git merge-base --is-ancestor <integration> HEAD`. If not, `git reset --hard <integration>`.
-- Work on a branch named `<integration>/<ticket id>`.
+- Work on a branch named `<integration>--<ticket id>`. Never `<integration>/<ticket id>`: git cannot create a branch under the name of an existing one.
 - Commit in small steps. Every message follows the `commits` convention page your prompt names, with the `Ticket:` and `Run:` footers in the final trailer block, on the lines next to any `Co-Authored-By:`.
 - Before reporting, merge the integration branch tip into your branch and make the tests pass again, so that landing your work is a fast-forward.
 
