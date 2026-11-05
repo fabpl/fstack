@@ -1,7 +1,7 @@
 # fstack
 
 > [!WARNING]
-> **Beta, work in progress.** fstack is at v0.2.0 and still being shaped by live runs. Skills, agents, file layouts and conventions may change without notice or migration path. Parallel mode (worktrees, merger, integration branch) has not yet been exercised on a real project.
+> **Beta, work in progress.** fstack is at v0.3.0 and still being shaped by live runs. Skills, agents, file layouts and conventions may change without notice or migration path. Parallel mode (worktrees, merger, integration branch) has not yet been exercised on a real project.
 
 A Claude Code plugin that gives a project a chief of staff.
 
@@ -64,4 +64,4 @@ Claude Code reads the plugin from that folder directly, so edits are live at the
 
 ## Status
 
-v0.2.0: architect agent and f-arch step added; not yet exercised on a real project.
+v0.3.0: parallel build hardened (ticket graph check, replay reconciliation, worktree setup and cleanup, pre-merge state), security convention, bug protocol, trigger evals; not yet exercised on a real project.

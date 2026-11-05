@@ -1,6 +1,6 @@
 {
   "name": "fstack",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "f-chief, a chief-of-staff skill for Claude Code: routes requests, grills until understanding is shared, delegates to parallel subagents, and keeps a markdown wiki as the project's memory.",
   "author": {
     "name": "fplanchette"
