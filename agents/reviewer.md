@@ -25,6 +25,7 @@ For every behaviour the spec promises, find where the diff delivers it and where
 Skip this axis when the architecture is `none`. Otherwise report:
 - a file, module, signature, schema field or shared-file entry that differs from the architecture's Structure, Interfaces, Data or Shared files,
 - a choice the architecture's Decisions settled that the code contradicts,
+- a failure mode the architecture lists that no test covers at the seam it names,
 - a departure an implementer report records only in `## Decisions`, not in `## Open`.
 
 ## Axis 3: conventions
@@ -45,7 +46,7 @@ Report only defects you can state as inputs leading to a wrong output or a crash
 
 ## Output
 
-Write `<run>/reports/review.md` in the report format: frontmatter (`agent: reviewer`, `ticket: none`, `status: done`, `files`), then `## Done` (what you reviewed, one line), `## Decisions` (empty or how you resolved an ambiguity), `## Observations` (facts worth keeping), `## Open` (the findings).
+Write `<run>/reports/review.md` in the report format: frontmatter (`agent: reviewer`, `ticket: none`, `status: done`, `files`), then `## Done` (what you reviewed, one line ending with the range as full shas, `<base sha>..<integration sha>` from `git rev-parse`: f-build counts what landed after it), `## Decisions` (empty or how you resolved an ambiguity), `## Observations` (facts worth keeping), `## Open` (the findings).
 
 Each finding is one line: `[spec|architecture|convention:<slug>|bug] path:line — defect — fix` (commit findings use the short sha in place of path:line). Order by severity, most severe first. Thirty lines maximum for the whole report: when there are more findings than lines, keep the most severe and say how many were cut.
 

@@ -6,7 +6,7 @@ related: [wiki-format, run-layout, agent-roles, route, 0001-inspired-not-depende
 supersedes:
 source_run: 2026-11-03-architect-step
 tags: [plugin, architecture]
-updated: 2026-11-03
+updated: 2026-11-05
 ---
 
 # fstack
@@ -56,9 +56,10 @@ fstack/
   skills/f-wiki/SKILL.md         bootstrap | distil <run>
   agents/explorer.md  architect.md  implementer.md  merger.md  reviewer.md
   wiki/   .fstack/                fstack's own memory, same format
+  evals/                         trigger cases for `claude plugin eval`: each step skill fires on a replay, not on a near miss
 ```
 
-Only f-chief is locked to user invocation; f-spec, f-arch, f-tickets, f-build and f-wiki stay model-invocable so f-chief can chain them. Skills read the format conventions from `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/`, so this wiki is both fstack's memory and the rule book f-chief applies elsewhere. Pages tagged `plugin-wide` ([[commits]], [[code-quality]], [[quality-catalog]]) are quality rules enforced in every project unless a project page of the same slug overrides them. Bootstrap writes a project `toolchain` page with the four gate commands; f-build passes them to every agent. Plugin agents are spawned as `fstack:<role>`; worktree isolation is passed per call so the no-git mode still works.
+Only f-chief is locked to user invocation; f-spec, f-arch, f-tickets, f-build and f-wiki stay model-invocable so f-chief can chain them. Skills read the format conventions from `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/`, so this wiki is both fstack's memory and the rule book f-chief applies elsewhere. Pages tagged `plugin-wide` ([[commits]], [[code-quality]], [[security]], [[quality-catalog]]) are quality rules enforced in every project unless a project page of the same slug overrides them. Bootstrap writes a project `toolchain` page with the four gate commands; f-build passes them to every agent. Plugin agents are spawned as `fstack:<role>`; worktree isolation is passed per call so the no-git mode still works.
 
 ## Out of scope v1
 

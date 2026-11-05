@@ -30,7 +30,7 @@ Classify the request into one route and announce it in one line: `Route: <answer
 | Route | Signs |
 |---|---|
 | answer | Asks what, where, why, how something works. No change to the project. |
-| quick | One change, clear shape, one agent can land it in one context window, no new vocabulary, no design choice to make. |
+| quick | One change, clear shape, one agent can land it in one context window, no new vocabulary, no design choice to make. A bug the user can describe (what was expected, what happened) is quick, unless its cause spans several modules. |
 | full | Several files or layers, fuzzy shape, trade-offs to settle, or more than one context window of work. |
 
 - answer and quick: proceed at once.
@@ -47,7 +47,7 @@ Run id for quick and full: `YYYY-MM-DD-<slug>`, today's date and a two-to-four-w
 
 ## 3. Route: quick
 
-1. Write `.fstack/runs/<run id>/brief.md`: frontmatter (`run`, `kind: brief`, `route: quick`, `date`), the request verbatim, and the wiki slugs that apply.
+1. Write `.fstack/runs/<run id>/brief.md`: frontmatter (`run`, `kind: brief`, `route: quick`, `date`), the request verbatim, and the wiki slugs that apply. For a bug, add three lines taken from the user's words, `expected:`, `observed:` and `reproduce:`, writing `unknown` for one the user did not give: the implementer starts from them.
 2. Spawn one `fstack:implementer` (foreground) with pointers only: the brief path as its ticket, spec `none`, architecture `none`, the wiki slugs, the integration branch `none`, the run directory. Say which tests to run if the wiki records a test command.
 3. Read its report. If `status` is not `done`, tell the user what is open and stop.
 4. Invoke the Skill tool with `fstack:f-wiki` and the argument `distil <run id>`.

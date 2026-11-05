@@ -45,7 +45,7 @@ Sections, in this order, all present:
 5. **Data** — schemas, fields, migrations, persisted formats. `none` when nothing changes.
 6. **Shared files** — every file more than one piece of the change will touch (registry, schema, config, message catalogue), with the exact entries each piece adds. f-tickets builds its blocking edges from this section.
 7. **Decisions** — one line per choice the spec did not dictate: `<decision> — recommended: <option> — rejected: <options> — reason — gate: yes|no`. `gate: yes` only when the choice is hard to reverse, surprising without context and a real trade-off, all three. The rest are recorded, not asked. Once the user has answered, `recommended:` becomes `chosen: <option> (user)`; the rest of the line stays.
-8. **Risks** — what could go wrong in the build, and where.
+8. **Failure modes and risks** — first, one line per step of the change that crosses a boundary (user input, network, database, file system, concurrent access): what fails, how it shows (loud, silent, partial), what the spec says must happen then, and the seam where that is tested. A failure the spec does not cover goes to Open as a spec ambiguity; you do not decide it. Then what could go wrong in the build, and where.
 9. **Open** — missing seams, ambiguities in the spec, conflicts with a decision or convention page.
 
 If a section would state something you did not establish from the spec, the wiki or the code, leave the line out rather than fill it.

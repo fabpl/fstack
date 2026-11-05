@@ -6,7 +6,7 @@ related: [code-quality, commits]
 supersedes:
 source_run: 2026-10-31-fstack-brief
 tags: [quality, plugin-wide, bootstrap]
-updated: 2026-10-31
+updated: 2026-11-05
 ---
 
 # Quality tool catalog
@@ -48,7 +48,21 @@ tags: [quality, toolchain]
 ---
 ```
 
-Body: one table per stack block with `gate`, `command`, `cwd`, `source` (`project`, `ci` or `catalog`). A gate with no command is written as `missing — recommended: <tool>`. Then one line: how to install the missing ones, as a proposed run, not an action.
+Body: one table per stack block with `gate`, `command`, `cwd`, `source` (`project`, `ci` or `catalog`). A gate with no command is written as `missing — recommended: <tool>`. Each table ends with a `setup` row, which is not a gate (see Setup). Then one line: how to install the missing ones, as a proposed run, not an action.
+
+## Setup
+
+A worktree holds what git tracks and nothing else: no installed dependencies, no environment file. `setup` is the one command line that makes a fresh checkout able to run the gates. Implementers run it once in a new worktree, before the first test.
+
+| Signal in the project | setup |
+|---|---|
+| `composer.json` | `composer install` |
+| `composer.json` with `laravel/framework` | `composer install && cp -n .env.example .env && php artisan key:generate` |
+| `package.json` | the install of the lockfile present: `pnpm install --frozen-lockfile`, `npm ci`, `yarn install --immutable` |
+| `pyproject.toml` | `uv sync` with a `uv.lock`, else the install the project's README or CI gives |
+| `go.mod`, `Cargo.toml` | `none`: the toolchain fetches on first build |
+
+What the project's CI runs before its gates wins over this table. The environment file comes from its committed example, never from the developer's own copy: a test that needs real credentials is a `partial` report, not a copied secret. A project matching several rows chains the commands in one `setup` row per stack block.
 
 ## Commit tooling
 

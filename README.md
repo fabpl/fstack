@@ -36,7 +36,7 @@ wiki/                 durable memory, committed, written by f-chief only
   brief.md  interview.md  spec.md  architecture.md  tickets/  notes/  reports/
 ```
 
-Two plugin-wide quality rules ship with it: Conventional Commits on every commit, and four quality gates (format, lint, analyse, test) that implementers must pass and the reviewer re-runs. Bootstrap detects the project's stack and records the gate commands in a `toolchain` page, recommending tools from a catalog for the gaps without installing them.
+Three plugin-wide quality rules ship with it: Conventional Commits on every commit, four quality gates (format, lint, analyse, test) that implementers must pass and the reviewer re-runs, and five security rules the reviewer checks on every run's diff. Bootstrap detects the project's stack and records the gate commands in a `toolchain` page, recommending tools from a catalog for the gaps without installing them.
 
 Every agent ends with one report: frontmatter plus Done, Decisions, Observations, Open, thirty lines maximum. The wiki and the final report are built from those reports.
 

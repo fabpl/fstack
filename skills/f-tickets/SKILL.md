@@ -51,4 +51,15 @@ status: todo
 
 Body, under thirty lines: what to build, in the project's terms; read first (spec sections, architecture sections, note paths, wiki slugs); acceptance criteria as checkable lines; what this ticket must not touch.
 
+## 5. Check
+
+Read back every ticket's frontmatter and acceptance criteria. No agent.
+
+- Every `blocked_by` id is a ticket file in the directory.
+- Every blocker has a lower number than the ticket it blocks. With that, the graph has no cycle.
+- Every Structure line of the architecture is named by a ticket. Every Behaviour statement of the spec is an acceptance criterion of a ticket. Every seam a ticket names is in the spec's Seams.
+- Two tickets that add entries to the same Shared file have a path between them in the graph, or a note fixes the exact names each one adds.
+
+Fix what is mechanical (a wrong id, a number out of order) and tell the user what changed. A gap that needs a choice (a Behaviour statement no ticket delivers, a missing edge) goes back to the user before you return.
+
 Return one line: the ticket count, how many have no blockers, and the directory path.

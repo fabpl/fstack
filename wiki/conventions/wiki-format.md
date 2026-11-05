@@ -6,7 +6,7 @@ related: [run-layout, 0002-single-writer-wiki]
 supersedes:
 source_run: 2026-10-31-fstack-brief
 tags: [wiki, memory]
-updated: 2026-10-31
+updated: 2026-11-05
 ---
 
 # Wiki format
@@ -52,7 +52,7 @@ Inside the body, link pages with `[[slug]]` where slug is the file name without 
 
 ## Precedence
 
-The plugin's own wiki, under `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/`, holds plugin-wide conventions, tagged `plugin-wide`. They apply in every project. A project page in `wiki/conventions/` with the same slug overrides the plugin page entirely; agents are pointed at one or the other, never both. Today's plugin-wide pages: [[commits]], [[code-quality]], [[quality-catalog]] (bootstrap only).
+The plugin's own wiki, under `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/`, holds plugin-wide conventions, tagged `plugin-wide`. They apply in every project. A project page in `wiki/conventions/` with the same slug overrides the plugin page entirely; agents are pointed at one or the other, never both. Today's plugin-wide pages: [[commits]], [[code-quality]], [[security]], [[quality-catalog]] (bootstrap only).
 
 ## Index
 

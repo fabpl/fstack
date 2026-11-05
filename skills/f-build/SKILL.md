@@ -13,24 +13,33 @@ You dispatch and read reports. You do not read code and you do not implement.
 
 Run `git rev-parse --is-inside-work-tree`. Run it again each time you recompute the frontier: a toolchain ticket may create the repository mid-run, and the mode follows it.
 
-- **git**: integration branch `fstack/$0`, created from the current HEAD if absent. Each implementer runs in the background with `isolation: "worktree"`. Several run at once. When git appears mid-run, create the branch from the current HEAD and build the remaining tickets in this mode.
+- **git**: integration branch `fstack/$0`, created from the current HEAD if absent. When you create it, add `base_branch` (`git branch --show-current`, or the sha on a detached HEAD) and `base_sha` (`git rev-parse HEAD`) to the frontmatter of `.fstack/runs/$0/brief.md`: the review and the close read them. Each implementer runs in the background with `isolation: "worktree"`. Several run at once. When git appears mid-run, create the branch from the current HEAD and build the remaining tickets in this mode.
 - **no git**: tell the user once that parallelism is off until a repository exists. Implementers run one at a time, in place, in ticket number order, with integration branch `none`. Skip every merger step.
 
-Find the gate commands (format, lint, analyse, test) in the project's `wiki/conventions/toolchain.md`, then in the spec's Testing decisions. Pass them to every agent. A gate the page marks `missing` is passed as `missing`. When the page does not exist, pass every gate as `missing`, say so to the user once, and suggest a bootstrap.
+Find the gate commands (format, lint, analyse, test) in the project's `wiki/conventions/toolchain.md`, then in the spec's Testing decisions. Pass them to every agent. A gate the page marks `missing` is passed as `missing`. When the page does not exist, pass every gate as `missing`, say so to the user once, and suggest a bootstrap. The same page holds the `setup` command that makes a fresh checkout runnable: pass it to every implementer, `none` when the page has none.
 
-Conventions to pass to every agent: the plugin-wide pages under `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/` whose tags include `plugin-wide` (today: `commits`, `code-quality`; `quality-catalog` is for bootstrap only), plus the project's `wiki/conventions/` slugs the spec or tickets name. A project page with the same slug as a plugin page replaces it. Resolve `${CLAUDE_PLUGIN_ROOT}` to an absolute path before writing it into a prompt: agents receive absolute paths.
+Conventions to pass to every agent: the plugin-wide pages under `${CLAUDE_PLUGIN_ROOT}/wiki/conventions/` whose tags include `plugin-wide` (today: `commits`, `code-quality`, `security`; `quality-catalog` is for bootstrap only), plus the project's `wiki/conventions/` slugs the spec or tickets name. A project page with the same slug as a plugin page replaces it. Resolve `${CLAUDE_PLUGIN_ROOT}` to an absolute path before writing it into a prompt: agents receive absolute paths.
 
 ## 2. Graph
 
-Read every ticket's frontmatter only. Build the graph from `blocked_by`. Keep a table in your reply as you go: ticket, status, branch, report path.
+Read every ticket's frontmatter only. Build the graph from `blocked_by`. A `blocked_by` id with no ticket file, or a blocker numbered higher than the ticket it blocks, stops the build: say which, and that `/fstack:f-tickets $0` repairs it. Keep a table in your reply as you go: ticket, status, branch, report path.
+
+Statuses on disk are claims: a replay after an interrupted session finds tickets left `building`. Before the first frontier, reconcile them with what landed:
+
+- git: the landed set is `git log fstack/$0 --grep="^Run: $0$" --format='%(trailers:key=Ticket,valueonly)' | sort -u`. Blank lines and the values `review` and `none` are not tickets. A ticket in it is `landed`, unless its file says `failed`.
+- A `building` ticket outside that set: when `reports/<ticket id>.md` says `done` and its branch still exists, spawn the merger for it as in step 3; otherwise set it back to `todo`.
+- no git: a ticket is `landed` when `reports/<ticket id>.md` says `done`; any other `building` ticket goes back to `todo`.
+- `failed` stays `failed` unless the user asks for a retry, which sets it back to `todo`.
+
+Say in one line what you changed, or that nothing needed it.
 
 The frontier is the set of `todo` tickets whose blockers are all `landed`. Landed means merged on the integration branch (git) or reported `done` (no git): the frontier comes from those two facts alone.
 
 ## 3. Dispatch loop
 
-Repeat until no ticket is `todo` or `building`:
+Repeat until the frontier is empty and no ticket is `building`. A `todo` ticket behind a `failed` one never reaches the frontier: it stays `todo` and is reported as not built.
 
-1. For every ticket on the frontier, set `status: building` in its frontmatter and spawn one `fstack:implementer` with pointers only: ticket path, spec path, architecture path (or `none`), note paths the ticket names, wiki convention slugs, the paths of every report already under `reports/` (their Decisions and Observations are the map of what earlier tickets built), the project's `wiki/overview/` page when its status is `active`, integration branch, gate commands, run directory. Background and worktree in git mode.
+1. For every ticket on the frontier, set `status: building` in its frontmatter and spawn one `fstack:implementer` with pointers only: ticket path, spec path, architecture path (or `none`), note paths the ticket names, wiki convention slugs, the paths of every report already under `reports/` (their Decisions and Observations are the map of what earlier tickets built), the project's `wiki/overview/` page when its status is `active`, integration branch, gate commands, setup command, run directory. Background and worktree in git mode.
 2. When an implementer returns:
    - `failed` or `partial`: read its `## Open` before anything else. If one missing fact explains it, spawn an explorer for that fact and re-dispatch once with the note. Otherwise set `status: failed`, leave its dependents `todo` and unbuildable, and continue with the rest.
    - `done` in git mode: spawn one `fstack:merger` (foreground) with the ticket branch, the integration branch, the test gate command, the `commits` convention page path, the run directory. On merger `done`, set the ticket `landed`. On merger `failed`, set the ticket `failed` and report the conflicting files.
@@ -39,14 +48,15 @@ Repeat until no ticket is `todo` or `building`:
 
 ## 4. Review, once
 
-When every ticket is `landed` or `failed`, spawn one `fstack:reviewer` with: the integration branch and its base (or the working tree without git), the spec path, the architecture path (or `none`), the ticket directory, the wiki convention slugs, the gate commands, the run directory.
+When the loop ends, spawn one `fstack:reviewer` with: the integration branch and its base, `base_sha` from the brief (or the working tree without git), the spec path, the architecture path (or `none`), the ticket directory, the wiki convention slugs, the gate commands, the run directory.
 
 Read `.fstack/runs/$0/reports/review.md`. If `## Open` has findings, spawn one `fstack:implementer` with the review report path as its ticket, the spec path, the architecture path (or `none`), the integration branch, the gate commands. One pass. When it returns, run focused checks only on the fixed findings if needed, then close.
 
 ## 5. Close
 
-- Git mode: run the test gate on the integration branch once. Remove implementer worktrees (`git worktree prune` after the harness cleans them). The integration branch stays where it is: merging into the user's branch and opening a pull request are the user's calls.
+- Git mode: run the test gate on the integration branch once. Then clean up each `landed` ticket: find the worktree of its branch in `git worktree list --porcelain`, `git worktree remove <path>` (no `--force`: a worktree with uncommitted changes stays and is named in your final message), then, only when `git merge-base --is-ancestor <ticket branch> fstack/$0` succeeds, `git branch -D <ticket branch>` (`-d` tests against the current HEAD, not the integration branch, and refuses a landed branch from anywhere else). Then `git worktree prune`. A `failed` ticket keeps its worktree and branch, named in your final message. The integration branch stays where it is: merging into the user's branch and opening a pull request are the user's calls.
+- Git mode, before the close commit: measure what the user must know before merging. Unreviewed work: `git rev-list --count <reviewed sha>..fstack/$0`, the reviewed sha being the end of the range in the review report's `## Done`; the fix pass lands after the only review. Base drift: `git rev-list --count fstack/$0..<base_branch>` commits arrived on the base since the run started, and `git merge-tree --write-tree --name-only <base_branch> fstack/$0` exits 0 when the merge is clean, 1 with the conflicting files otherwise (git 2.38 or later; on an older git, say the merge was not checked).
 - Run files: during the build, ticket status edits and other changes under `.fstack/runs/$0/` stay uncommitted while implementers commit their own files. Now, when the project is a git repository, commit everything under `.fstack/runs/$0/` in one commit `chore(run): close $0` with footers `Ticket: none` and `Run: $0`, on the integration branch in git mode, on the current branch otherwise.
-- Tell the user, in under ten lines: tickets landed and failed, integration branch, gate results, review finding count and how many were fixed. Every number comes from a report or a command output.
+- Tell the user, in under ten lines: tickets landed, failed and not built, integration branch, gate results, review finding count and how many were fixed, the number of commits no review covered, and whether the base moved and merges cleanly. Every number comes from a report or a command output.
 
 Return one line: `<landed>/<total> landed — <branch or 'in place'> — <review findings> findings, <fixed> fixed`.

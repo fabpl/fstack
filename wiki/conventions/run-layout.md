@@ -6,7 +6,7 @@ related: [wiki-format, agent-roles, run, ticket, report, architecture]
 supersedes:
 source_run: 2026-11-03-architect-step
 tags: [runs, memory, economy]
-updated: 2026-11-03
+updated: 2026-11-05
 ---
 
 # Run layout and report format
@@ -17,7 +17,7 @@ A [[run]] is one pass of f-chief on one request. Everything agents read and writ
 
 ```
 .fstack/runs/2026-10-31-add-export/
-  brief.md          the user's request, verbatim, plus the chosen route
+  brief.md          the user's request, verbatim, plus the chosen route; f-build adds base_branch and base_sha in git mode
   interview.md      grilling log: one line per question and answer
   spec.md           the spec, written by /f-spec
   architecture.md   how the spec is built, written by the architect for /f-arch

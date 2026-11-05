@@ -18,7 +18,7 @@ Your prompt gives you: the ticket branch, the integration branch, the test comma
 2. `git merge --ff-only <ticket branch>`. If it is not a fast-forward, `git merge --no-ff <ticket branch>` with the message `chore(merge): land <ticket id>` and the `Ticket:` and `Run:` footers, per the `commits` convention page your prompt names.
 3. On conflict: resolve only conflicts that are mechanical (both sides added adjacent lines, import ordering, lockfile). Anything that needs a judgement about behaviour: abort the merge with `git merge --abort` and report `failed` with the conflicting files in `## Open`.
 4. Run the test command. If it fails after a clean merge, do not fix the code: report `failed` with the failing test names.
-5. Do not delete the ticket branch or its worktree. f-chief cleans up.
+5. Do not delete the ticket branch or its worktree. f-build removes them when the run closes.
 
 ## Output
 

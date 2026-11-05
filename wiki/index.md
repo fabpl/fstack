@@ -1,6 +1,6 @@
 # fstack wiki index
 
-Read this first. One line per page. Updated: 2026-11-03.
+Read this first. One line per page. Updated: 2026-11-05.
 
 ## Overview
 - [[fstack]] — what the plugin is, its missions, routing, surface, plugin layout
@@ -11,7 +11,8 @@ Read this first. One line per page. Updated: 2026-11-03.
 - [[agent-roles]] — roles, models, context-pointer communication, frontier parallelism
 - [[commits]] — plugin-wide: Conventional Commits 1.0.0 plus Ticket/Run footers, overridable per project
 - [[code-quality]] — plugin-wide: four gates (format, lint, analyse, test), no silenced rules, baselines on adoption
-- [[quality-catalog]] — plugin-wide, bootstrap only: default tools per stack signal, project toolchain page layout
+- [[security]] — plugin-wide: five rules on secrets, untrusted input, authorisation, dependencies and logs, proof required for a finding
+- [[quality-catalog]] — plugin-wide, bootstrap only: default tools per stack signal, setup command, project toolchain page layout
 
 ## Decisions
 - [[0001-inspired-not-dependent]] — reuse Pocock's ideas, depend on nothing
